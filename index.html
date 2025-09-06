@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Awesome Nano-Banana 圖片庫 - 繁體中文版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'PingFang TC', 'Noto Sans TC', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .search-container {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 30px;
+        }
+
+        .case-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .case-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .case-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .case-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .case-author {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .case-images {
+            padding: 20px;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .image-container {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #f5f5f5;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .image-container:hover img {
+            transform: scale(1.05);
+        }
+
+        .image-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .prompt-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .prompt-text {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            margin-bottom: 10px;
+        }
+
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .copy-btn.copied {
+            background: #28a745;
+        }
+
+        .notes {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .notes-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 8px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+        }
+
+        .modal-content {
+            position: relative;
+            margin: 5% auto;
+            width: 90%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            opacity: 0.7;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .modal-image-container {
+            text-align: center;
+        }
+
+        .modal-image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .modal-image-label {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .gemini-link {
+            display: inline-block;
+            background: #4285f4;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        .gemini-link:hover {
+            background: #3367d6;
+        }
+
+        @media (max-width: 768px) {
+            .cases-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .image-gallery {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍌 Awesome Nano-Banana 圖片庫</h1>
+            <p>探索 Google Nano-Banana 在各種任務場景下的驚艷圖片和提示詞</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-number" id="totalCases">47</span>
+                <span class="stat-label">個案例</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="totalImages">200+</span>
+                <span class="stat-label">張圖片</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">100%</span>
+                <span class="stat-label">免費使用</span>
+            </div>
+        </div>
+
+        <div class="search-container">
+            <input type="text" class="search-box" id="searchBox" placeholder="搜尋案例標題、作者或提示詞...">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">全部</button>
+                <button class="filter-btn" data-filter="人物">人物相關</button>
+                <button class="filter-btn" data-filter="建築">建築相關</button>
+                <button class="filter-btn" data-filter="藝術">藝術創作</button>
+                <button class="filter-btn" data-filter="產品">產品設計</button>
+                <button class="filter-btn" data-filter="修圖">修圖編輯</button>
+                <button class="filter-btn" onclick="testFunction()" style="background: #28a745; color: white;">測試按鈕</button>
+            </div>
+        </div>
+
+        <div class="cases-grid" id="casesGrid">
+            <!-- Cases will be dynamically loaded here -->
+        </div>
+    </div>
+
+    <!-- Modal for detailed view -->
+    <div id="caseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">案例詳情</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Modal content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Case data extracted from README.md
+        const casesData = [
+            {
+                id: 1,
+                title: "插畫變手辦",
+                author: "@ZHO_ZHO_ZHO",
+                category: "藝術",
+                inputImages: ["images/case1/input0.jpg", "images/case1/input.jpg"],
+                outputImages: ["images/case1/output0.jpg", "images/case1/output.jpg"],
+                prompt: "將這張照片變成角色手辦。在它後面放置一個印有角色圖像的盒子，盒子上有一台電腦顯示Blender建模過程。在盒子前面添加一個圓形塑料底座，角色手辦站在上面。如果可能的話，將場景設置在室內",
+                notes: "需要上傳一張參考圖片作為生成手辦的對象"
+            },
+            {
+                id: 2,
+                title: "根據地圖箭頭生成地面視角圖片",
+                author: "@tokumin",
+                category: "建築",
+                inputImages: ["images/case2/input.jpg", "images/case2/input3.jpg", "images/case2/input2.jpg"],
+                outputImages: ["images/case2/output.jpg", "images/case2/output3.jpg", "images/case2/output2.jpg"],
+                prompt: "畫出紅色箭頭看到的內容\n/\n從紅色圓圈沿箭頭方向畫出真實世界的視角",
+                notes: "需要上傳一張包含紅色箭頭的google maps圖像"
+            },
+            {
+                id: 3,
+                title: "真實世界的AR信息化",
+                author: "@bilawalsidhu",
+                category: "產品",
+                inputImages: [],
+                outputImages: ["images/case3/output.jpg"],
+                prompt: "你是一個基於位置的AR體驗生成器。在這張圖像中突出顯示[興趣點]並標註相關信息",
+                notes: "需要在提示詞中 [POI] 輸入需要標註的興趣點"
+            },
+            {
+                id: 4,
+                title: "分離出3D建築/製作等距模型",
+                author: "@Zieeett",
+                category: "建築",
+                inputImages: ["images/case4/input.jpg", "images/case4/input2.jpg"],
+                outputImages: ["images/case4/output.jpg", "images/case4/output2.jpg"],
+                prompt: "將圖像製作成白天和等距視圖[僅限建築]",
+                notes: "根據需要修改 [方括號] 內的信息（可以設置為車輛、人物等）"
+            },
+            {
+                id: 5,
+                title: "不同時代自己的照片",
+                author: "@AmirMushich",
+                category: "人物",
+                inputImages: ["images/case5/input.jpg"],
+                outputImages: ["images/case5/output.jpg"],
+                prompt: "將角色的風格改為[1970]年代的經典[男性]風格\n\n添加[長卷發]，\n[長鬍子]，\n將背景改為標誌性的[加州夏季風景]\n\n不要改變角色的面部",
+                notes: "將 [方括號] 中的文字改為你的時代和細節信息"
+            },
+            {
+                id: 6,
+                title: "多參考圖像生成",
+                author: "@MrDavids1",
+                category: "人物",
+                inputImages: ["images/case6/input.jpg"],
+                outputImages: ["images/case6/output.jpg"],
+                prompt: "一個模特擺姿勢靠在粉色寶馬車上。她穿著以下物品，場景背景是淺灰色。綠色外星人是一個鑰匙扣，掛在粉色手提包上。模特肩上還有一隻粉色鸚鵡。旁邊坐著一隻戴著粉色項圈和金色耳機的哈巴狗",
+                notes: "提示詞需要詳細描述和包含多個參考對象"
+            },
+            {
+                id: 7,
+                title: "自動修圖",
+                author: "@op7418",
+                category: "修圖",
+                inputImages: ["images/case7/input.jpg"],
+                outputImages: ["images/case7/output.jpg"],
+                prompt: "這張照片很無聊很平淡。增強它！增加對比度，提升色彩，改善光線使其更豐富，你可以裁剪和刪除影響構圖的細節",
+                notes: "需要上傳一張需要進行修正的圖像"
+            },
+            {
+                id: 8,
+                title: "手繪圖控制多角色姿態",
+                author: "@op7418",
+                category: "人物",
+                inputImages: ["images/case8/input.jpg"],
+                outputImages: ["images/case8/output.jpg"],
+                prompt: "讓這兩個角色使用圖3的姿勢進行戰鬥。添加適當的視覺背景和場景互動，生成圖像比例為16:9",
+                notes: "需要上傳角色的圖像以及手繪草圖"
+            },
+            {
+                id: 9,
+                title: "跨視角圖像生成",
+                author: "@op7418",
+                category: "建築",
+                inputImages: ["images/case9/input.jpg"],
+                outputImages: ["images/case9/output.jpg"],
+                prompt: "將照片轉換為俯視角度並標記攝影師的位置",
+                notes: "需要上傳一張地面上拍攝的照片"
+            },
+            {
+                id: 10,
+                title: "定制人物貼紙",
+                author: "@op7418",
+                category: "藝術",
+                inputImages: ["images/case10/input.jpg"],
+                outputImages: ["images/case10/output.jpg"],
+                prompt: "幫我將角色變成類似圖2的白色輪廓貼紙。角色需要轉換成網頁插畫風格，並添加一個描述圖1的俏皮白色輪廓短語",
+                notes: "需要上傳一張貼紙參考圖以及一張人物圖像"
+            },
+            {
+                id: 11,
+                title: "動漫轉真人Coser",
+                author: "@ZHO_ZHO_ZHO",
+                category: "人物",
+                inputImages: ["images/case11/input.jpg"],
+                outputImages: ["images/case11/output.jpg"],
+                prompt: "生成一個女孩cosplay這張插畫的照片，背景設置在Comiket",
+                notes: "需要上傳一張插畫圖像"
+            },
+            {
+                id: 12,
+                title: "生成角色設定",
+                author: "@ZHO_ZHO_ZHO",
+                category: "藝術",
+                inputImages: ["images/case12/input.jpg"],
+                outputImages: ["images/case12/output.jpg"],
+                prompt: "為我生成人物的角色設定（Character Design）\n\n比例設定（不同身高對比、頭身比等）\n\n三視圖（正面、側面、背面）\n\n表情設定（Expression Sheet） → 就是你發的那種圖\n\n動作設定（Pose Sheet） → 各種常見姿勢\n\n服裝設定（Costume Design）",
+                notes: "需要上傳一張角色參考圖像"
+            },
+            {
+                id: 13,
+                title: "色卡線稿上色",
+                author: "@ZHO_ZHO_ZHO",
+                category: "藝術",
+                inputImages: ["images/case13/input.jpg"],
+                outputImages: ["images/case13/output.jpg"],
+                prompt: "準確使用圖2色卡為圖1人物上色",
+                notes: "需要上傳一張線稿圖和一張色卡圖"
+            },
+            {
+                id: 14,
+                title: "文章信息圖",
+                author: "@黃建同學",
+                category: "產品",
+                inputImages: [],
+                outputImages: ["images/case14/output.jpg"],
+                prompt: "為文章內容生成信息圖\n要求：\n1. 將內容翻譯成英文，並提煉文章的關鍵信息\n2. 圖中內容保持精簡，只保留大標題\n3. 圖中文字採用英文\n4. 加上豐富可愛的卡通人物和元素",
+                notes: "需要上傳一段博客/文章"
+            },
+            {
+                id: 15,
+                title: "更換多種髮型",
+                author: "@balconychy",
+                category: "人物",
+                inputImages: [],
+                outputImages: ["images/case15/output.jpg"],
+                prompt: "以九宮格的方式生成這個人不同髮型的頭像",
+                notes: "需要上傳一張需要更換髮型的人像圖片"
+            },
+            {
+                id: 16,
+                title: "模型標註講解圖",
+                author: "@berryxia_ai",
+                category: "產品",
+                inputImages: [],
+                outputImages: ["images/case16/output.jpg"],
+                prompt: "繪製[3D人體器官模型展示示例心臟]用於學術展示，進行標註講解，適用於展示其原理和[每個器官]的功能，非常逼真，高度還原，精細度非常細緻的設計",
+                notes: "將 [方括號] 中的文字改為需要展示的模型"
+            },
+            {
+                id: 17,
+                title: "定制大理石雕塑",
+                author: "@umesh_ai",
+                category: "藝術",
+                inputImages: [],
+                outputImages: ["images/case17/output.jpg"],
+                prompt: "一張超詳細的圖像中主體雕塑的寫實圖像，由閃亮的大理石製成。雕塑應展示光滑反光的大理石表面，強調其光澤和藝術工藝。設計優雅，突出大理石的美麗和深度。圖像中的光線應增強雕塑的輪廓和紋理，創造出視覺上令人驚嘆和迷人的效果",
+                notes: "需要上傳一張參考圖像"
+            },
+            {
+                id: 18,
+                title: "根據食材做菜",
+                author: "@Gdgtify",
+                category: "產品",
+                inputImages: ["images/case18/input1.jpg", "images/case18/input2.jpg", "images/case18/input3.jpg"],
+                outputImages: ["images/case18/output1.jpg", "images/case18/output2.jpg", "images/case18/output3.jpg"],
+                prompt: "用這些食材為我做一頓美味的午餐，放在盤子裡，盤子的特寫視圖，移除其他盤子和食材",
+                notes: "需要上傳一張帶有多種食材的照片"
+            },
+            {
+                id: 19,
+                title: "數學題推理",
+                author: "@Gorden Sun",
+                category: "產品",
+                inputImages: ["images/case19/input.jpg"],
+                outputImages: ["images/case19/output.jpg"],
+                prompt: "根據問題將問題的答案寫在對應的位置上",
+                notes: "需要上傳一道數學類的題目"
+            },
+            {
+                id: 20,
+                title: "舊照片上色",
+                author: "@GeminiApp",
+                category: "修圖",
+                inputImages: ["images/case20/input.jpg"],
+                outputImages: ["images/case20/output.jpg"],
+                prompt: "修復並為這張照片上色",
+                notes: "需要上傳一張老舊、需要修復的照片"
+            },
+            {
+                id: 21,
+                title: "OOTD穿搭",
+                author: "@302.AI",
+                category: "人物",
+                inputImages: ["images/case21/input.jpg"],
+                outputImages: ["images/case21/output.jpg"],
+                prompt: "選擇圖1中的人，讓他們穿上圖2中的所有服裝和配飾。在戶外拍攝一系列寫實的OOTD風格照片，使用自然光線，時尚的街頭風格，清晰的全身鏡頭。保持圖1中人物的身份和姿勢，但以連貫時尚的方式展示圖2中的完整服裝和配飾",
+                notes: "需要上傳一張人物圖片和服裝圖片"
+            },
+            {
+                id: 22,
+                title: "人物換衣",
+                author: "@skirano",
+                category: "人物",
+                inputImages: ["images/case22/input.jpg"],
+                outputImages: ["images/case22/output.jpg"],
+                prompt: "將輸入圖像中人物的服裝替換為參考圖像中顯示的目標服裝。保持人物的姿勢、面部表情、背景和整體真實感不變。讓新服裝看起來自然、合身，並與光線和陰影保持一致。不要改變人物的身份或環境——只改變衣服",
+                notes: "需要上傳人物圖像和衣服圖像"
+            },
+            {
+                id: 23,
+                title: "多視圖結果生成",
+                author: "@Error_HTTP_404",
+                category: "產品",
+                inputImages: ["images/case23/input.jpg"],
+                outputImages: ["images/case23/output.jpg"],
+                prompt: "在白色背景上生成前、後、左、右、上、下視圖。均勻分佈。一致的主體。等距透視等效",
+                notes: "需要上傳參考圖像"
+            },
+            {
+                id: 24,
+                title: "電影分鏡",
+                author: "@GeminiApp",
+                category: "藝術",
+                inputImages: ["images/case24/input.jpg"],
+                outputImages: ["images/case24/output.jpg"],
+                prompt: "用這兩個角色創作一個令人上癮的12部分故事，包含12張圖像，講述經典的黑色電影偵探故事。故事關於他們尋找線索並最終發現的失落的寶藏。整個故事充滿刺激，有情感的高潮和低谷，以精彩的轉折和高潮結尾。不要在圖像中包含任何文字或文本，純粹通過圖像本身講述故事",
+                notes: "需要上傳參考圖像"
+            },
+            {
+                id: 25,
+                title: "人物姿勢修改",
+                author: "@arrakis_ai",
+                category: "人物",
+                inputImages: ["images/case25/input.jpg"],
+                outputImages: ["images/case25/output.jpg"],
+                prompt: "讓圖片中的人直視前方",
+                notes: "需要上傳參考圖像"
+            },
+            {
+                id: 26,
+                title: "線稿圖生成圖像",
+                author: "@ZHO_ZHO_ZHO",
+                category: "藝術",
+                inputImages: ["images/case26/input.jpg"],
+                outputImages: ["images/case26/output.jpg"],
+                prompt: "將圖一人物換成圖二姿勢，專業攝影棚拍攝",
+                notes: "需要上傳線稿圖和參考圖像"
+            },
+            {
+                id: 27,
+                title: "為圖像添加水印",
+                author: "@AiMachete",
+                category: "修圖",
+                inputImages: ["images/case27/input.jpg"],
+                outputImages: ["images/case27/output.jpg"],
+                prompt: "在整個圖片上反覆覆蓋\"TRUMP\"這個詞。",
+                notes: "需要上傳參考圖像"
+            },
+            {
+                id: 28,
+                title: "知識推理生成圖像",
+                author: "@icreatelife",
+                category: "產品",
+                inputImages: [],
+                outputImages: ["images/case28/output.jpg", "images/case28/output1.jpg"],
+                prompt: "為我製作一張世界五座最高建築的信息圖 / 製作一張關於地球上最甜蜜事物的彩色信息圖",
+                notes: ""
+            },
+            {
+                id: 29,
+                title: "紅筆批註",
+                author: "@AiMachete",
+                category: "修圖",
+                inputImages: ["images/case29/input.jpg"],
+                outputImages: ["images/case29/output.jpg"],
+                prompt: "分析這張圖片。用紅筆標出你可以改進的地方。",
+                notes: "需要上傳參考圖像"
+            },
+            {
+                id: 30,
+                title: "爆炸的食物",
+                author: "@icreatelife",
+                category: "產品",
+                inputImages: [],
+                outputImages: ["images/case30/output.jpg", "images/case30/output1.jpg"],
+                prompt: "在具有戲劇性的現代場景中拍攝該產品，並伴隨著爆炸性的向外動態排列，主要成分新鮮和原始在產品周圍飛舞，表明其新鮮度和營養價值。促銷廣告鏡頭，沒有文字，強調產品，以關鍵品牌顏色作為背景。",
+                notes: "需要上傳參考圖像"
+            },
+            {
+                id: 31,
+                title: "製作漫畫書",
+                author: "@icreatelife",
+                category: "藝術",
+                inputImages: ["images/case31/input.jpg"],
+                outputImages: ["images/case31/output.jpg"],
+                prompt: "基於上傳的圖像，製作漫畫書條幅，添加文字，寫一個引人入勝的故事。我想要一本奇幻漫畫書。",
+                notes: "需要上傳參考圖像"
+            },
+            {
+                id: 32,
+                title: "動作人偶",
+                author: "@icreatelife",
+                category: "產品",
+                inputImages: ["images/case32/input.jpg"],
+                outputImages: ["images/case32/output.jpg"],
+                prompt: "製作一個寫著 [\\\"AI Evangelist - Kris\\\"] 的動作人偶，並包含 [咖啡、烏龜、筆記本電腦、手機和耳機] 。",
+                notes: "將 [方括號] 中的文字改為需要添加的物品"
+            },
+            {
+                id: 33,
+                title: "地圖生成等距建築",
+                author: "@demishassabis",
+                category: "建築",
+                inputImages: ["images/case33/input.jpg"],
+                outputImages: ["images/case33/output.jpg"],
+                prompt: "以這個位置為地標，將其設為等距圖像（僅建築物），採用遊戲主題公園的風格",
+                notes: "需要上傳地圖的參考圖像"
+            },
+            {
+                id: 34,
+                title: "參考圖控制人物表情",
+                author: "@ZHO_ZHO_ZHO",
+                category: "人物",
+                inputImages: [],
+                outputImages: ["images/case34/case.jpg"],
+                prompt: "圖一人物參考/換成圖二人物的表情",
+                notes: "需要上傳一張人物參考圖和一張表情參考圖"
+            },
+            {
+                id: 35,
+                title: "插畫繪畫過程四格",
+                author: "@ZHO_ZHO_ZHO",
+                category: "藝術",
+                inputImages: [],
+                outputImages: ["images/case35/case.jpg"],
+                prompt: "為人物生成繪畫過程四宮格，第一步：線稿，第二步平鋪顏色，第三步：增加陰影，第四步：細化成型。不要文字",
+                notes: "需要上傳一張人物參考圖像"
+            },
+            {
+                id: 36,
+                title: "虛擬試妝",
+                author: "@ZHO_ZHO_ZHO",
+                category: "人物",
+                inputImages: [],
+                outputImages: ["images/case36/case.jpg"],
+                prompt: "為圖一人物化上圖二的妝，還保持圖一的姿勢",
+                notes: "需要上傳一張人物參考圖像和一張妝造參考圖片"
+            },
+            {
+                id: 37,
+                title: "妝面分析",
+                author: "@ZHO_ZHO_ZHO",
+                category: "人物",
+                inputImages: ["images/case37/input.jpg"],
+                outputImages: ["images/case37/output.jpg"],
+                prompt: "分析這張圖片。用紅筆標出可以改進的地方\nAnalyze this image. Use red pen to denote where you can improve",
+                notes: "需要上傳一張人物參考圖像"
+            },
+            {
+                id: 38,
+                title: "Google地圖視角下的中土世界",
+                author: "@TechHallo",
+                category: "建築",
+                inputImages: [],
+                outputImages: ["images/case38/output.jpg"],
+                prompt: "行車記錄儀谷歌街景拍攝 | [霍比屯街道] | [霍比特人進行園藝和抽煙斗等日常活動] | [晴天]",
+                notes: "將 [方括號] 中的文字改為需要的地區和天氣"
+            },
+            {
+                id: 39,
+                title: "印刷插畫生成",
+                author: "@Umesh",
+                category: "藝術",
+                inputImages: [],
+                outputImages: ["images/case39/output.jpg"],
+                prompt: "僅使用短語 [\\\"riding a bike\\\"] 中的字母，創作一幅極簡主義的黑白印刷插圖，描繪騎自行車的場景。每個字母的形狀和位置都應富有創意，以構成騎車人、自行車和動感。設計應簡潔、極簡，完全由修改後的 [\\\"riding a bike\\\"] 字母組成，不添加任何額外的形狀或線條。字母應流暢或彎曲，以模仿場景的自然形態，同時保持清晰易讀。",
+                notes: "將 [方括號] 中的文字改為需要的文字"
+            },
+            {
+                id: 40,
+                title: "超多人物姿勢生成",
+                author: "@tapehead_Lab",
+                category: "人物",
+                inputImages: [],
+                outputImages: ["images/case40/case.jpg"],
+                prompt: "請為這幅插圖創建一個姿勢表，擺出各種姿勢",
+                notes: "需要上傳一張人物參考圖像"
+            },
+            {
+                id: 41,
+                title: "物品包裝生成",
+                author: "@ZHO_ZHO_ZHO",
+                category: "產品",
+                inputImages: [],
+                outputImages: ["images/case41/case.jpg"],
+                prompt: "把圖一貼在圖二易拉罐上，並放在極簡設計的布景中，專業攝影",
+                notes: "需要上傳一張物品參考圖像和一張包裝參考圖片"
+            },
+            {
+                id: 42,
+                title: "疊加濾鏡/材質",
+                author: "@ZHO_ZHO_ZHO",
+                category: "修圖",
+                inputImages: [],
+                outputImages: ["images/case42/case.jpg"],
+                prompt: "為圖一照片疊加上圖二 [玻璃] 的效果",
+                notes: "將 [方括號] 中的文字改為需要的濾鏡/材質"
+            },
+            {
+                id: 43,
+                title: "控制人物臉型",
+                author: "@ZHO_ZHO_ZHO",
+                category: "人物",
+                inputImages: [],
+                outputImages: ["images/case43/case.jpg"],
+                prompt: "圖一人物按照圖二的臉型設計為q版形象",
+                notes: "需要上傳一張參考圖像和一張臉型參考圖片"
+            },
+            {
+                id: 44,
+                title: "光影控制",
+                author: "@ZHO_ZHO_ZHO",
+                category: "修圖",
+                inputImages: [],
+                outputImages: ["images/case44/case.jpg"],
+                prompt: "圖一人物變成圖二光影，深色為暗",
+                notes: "需要上傳一張參考圖像和一張光影參考圖片"
+            },
+            {
+                id: 45,
+                title: "樂高玩具小人",
+                author: "@ZHO_ZHO_ZHO",
+                category: "產品",
+                inputImages: ["images/case45/input.jpg"],
+                outputImages: ["images/case45/output.jpg"],
+                prompt: "將照片中的人物轉化為樂高小人包裝盒的風格，以等距透視呈現。在包裝盒上標註標題\\\"ZHOGUE\\\"。在盒內展示基於照片中人物的樂高小人，並配有他們必需的物品（如化妝品、包或其他物品）作為樂高配件。在盒子旁邊，也展示實際樂高小人本身，未包裝，以逼真且生動的方式渲染。",
+                notes: "需要上傳一張參考圖像"
+            },
+            {
+                id: 46,
+                title: "高達模型小人",
+                author: "@ZHO_ZHO_ZHO",
+                category: "產品",
+                inputImages: ["images/case46/input.jpg"],
+                outputImages: ["images/case46/output.jpg"],
+                prompt: "將照片中的人物轉化為高達模型套件包裝盒的風格，以等距透視呈現。在包裝盒上標註標題\\\"ZHOGUE\\\"。在盒內展示照片中人物的高達風格機械人版本，並伴隨其必需品（如化妝品、包袋或其他物品）重新設計為未來派機械配件。包裝盒應類似真實的 Gunpla 盒子，包含技術插圖、說明書風格細節和科幻字體。在盒子旁邊，也展示實際的高達風格機械人本身，在包裝外以逼真且栩栩如生的風格渲染，類似於官方 Bandai 宣傳渲染圖。",
+                notes: "需要上傳一張參考圖像"
+            },
+            {
+                id: 47,
+                title: "硬件拆解圖",
+                author: "@AIimagined",
+                category: "產品",
+                inputImages: [],
+                outputImages: ["images/case47/output.jpg"],
+                prompt: "數碼單反相機的分解圖，展示了其所有配件和內部組件，例如鏡頭、濾鏡、內部組件、鏡頭、傳感器、螺絲、按鈕、取景器、外殼和電路板。保留了數碼單反相機的紅色裝飾。",
+                notes: ""
+            }
+        ];
+
+        let filteredCases = [...casesData];
+        let currentFilter = 'all';
+
+        // Initialize the page
+        function init() {
+            renderCases();
+            setupEventListeners();
+        }
+
+        // Render cases grid
+        function renderCases() {
+            const grid = document.getElementById('casesGrid');
+            grid.innerHTML = '';
+
+            filteredCases.forEach(caseData => {
+                const caseCard = createCaseCard(caseData);
+                grid.appendChild(caseCard);
+            });
+        }
+
+        // Create case card element
+        function createCaseCard(caseData) {
+            const card = document.createElement('div');
+            card.className = 'case-card';
+            card.onclick = () => openModal(caseData);
+
+            const hasInputImages = caseData.inputImages.length > 0;
+            const hasOutputImages = caseData.outputImages.length > 0;
+
+            let imageGalleryHTML = '';
+            if (hasInputImages && hasOutputImages) {
+                imageGalleryHTML = `
+                    <div class="image-gallery">
+                        <div class="image-container">
+                            <img src="${caseData.inputImages[0]}" alt="輸入圖片" onerror="this.style.display='none'">
+                            <div class="image-label">輸入</div>
+                        </div>
+                        <div class="image-container">
+                            <img src="${caseData.outputImages[0]}" alt="輸出圖片" onerror="this.style.display='none'">
+                            <div class="image-label">輸出</div>
+                        </div>
+                    </div>
+                `;
+            } else if (hasOutputImages) {
+                imageGalleryHTML = `
+                    <div class="image-gallery">
+                        <div class="image-container">
+                            <img src="${caseData.outputImages[0]}" alt="輸出圖片" onerror="this.style.display='none'">
+                            <div class="image-label">輸出</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <div class="case-header">
+                    <div class="case-title">${caseData.title}</div>
+                    <div class="case-author">${caseData.author}</div>
+                </div>
+                <div class="case-images">
+                    ${imageGalleryHTML}
+                    <div class="prompt-section">
+                        <div class="prompt-text">${caseData.prompt}</div>
+                        <button class="copy-btn" onclick="event.stopPropagation(); copyPrompt('${caseData.id}')">複製提示詞</button>
+                        <a href="https://gemini.google.com/" target="_blank" class="gemini-link">在 Gemini 中試用</a>
+                    </div>
+                    ${caseData.notes ? `<div class="notes"><div class="notes-title">注意事項：</div>${caseData.notes}</div>` : ''}
+                </div>
+            `;
+
+            return card;
+        }
+
+        // Open modal with case details
+        function openModal(caseData) {
+            const modal = document.getElementById('caseModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+
+            modalTitle.textContent = caseData.title;
+
+            let modalContent = `
+                <div class="modal-images">
+            `;
+
+            // Add input images
+            if (caseData.inputImages.length > 0) {
+                caseData.inputImages.forEach((img, index) => {
+                    modalContent += `
+                        <div class="modal-image-container">
+                            <img src="${img}" alt="輸入圖片 ${index + 1}" onerror="this.style.display='none'">
+                            <div class="modal-image-label">輸入圖片 ${index + 1}</div>
+                            <button class="copy-btn" onclick="event.stopPropagation(); copyImage('${img}')">複製圖片內容</button>
+                        </div>
+                    `;
+                });
+            }
+
+            // Add output images
+            if (caseData.outputImages.length > 0) {
+                caseData.outputImages.forEach((img, index) => {
+                    modalContent += `
+                        <div class="modal-image-container">
+                            <img src="${img}" alt="輸出圖片 ${index + 1}" onerror="this.style.display='none'">
+                            <div class="modal-image-label">輸出圖片 ${index + 1}</div>
+                            <button class="copy-btn" onclick="event.stopPropagation(); copyImage('${img}')">複製圖片內容</button>
+                        </div>
+                    `;
+                });
+            }
+
+            modalContent += `
+                </div>
+                <div class="prompt-section">
+                    <h3>提示詞：</h3>
+                    <div class="prompt-text">${caseData.prompt}</div>
+                    <button class="copy-btn" onclick="event.stopPropagation(); copyPrompt('${caseData.id}')">複製提示詞</button>
+                    <a href="https://gemini.google.com/" target="_blank" class="gemini-link">在 Gemini 中試用</a>
+                </div>
+            `;
+
+            if (caseData.notes) {
+                modalContent += `
+                    <div class="notes">
+                        <div class="notes-title">注意事項：</div>
+                        ${caseData.notes}
+                    </div>
+                `;
+            }
+
+            modalBody.innerHTML = modalContent;
+            modal.style.display = 'block';
+        }
+
+        // Copy prompt to clipboard
+        window.copyPrompt = function(caseId) {
+            const caseData = casesData.find(c => c.id == caseId);
+            if (caseData) {
+                navigator.clipboard.writeText(caseData.prompt).then(() => {
+                    // Show feedback
+                    const buttons = document.querySelectorAll(`button[onclick="copyPrompt('${caseId}')"]`);
+                    buttons.forEach(btn => {
+                        const originalText = btn.textContent;
+                        btn.textContent = '已複製！';
+                        btn.classList.add('copied');
+                        setTimeout(() => {
+                            btn.textContent = originalText;
+                            btn.classList.remove('copied');
+                        }, 2000);
+                    });
+                }).catch(err => {
+                    console.error('Failed to copy text: ', err);
+                    alert('複製失敗，請手動複製提示詞');
+                });
+            }
+        }
+
+        // Copy image content to clipboard
+        window.copyImage = function(imageSrc) {
+            // First try to fetch the image as a blob
+            fetch(imageSrc)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch image');
+                    }
+                    return response.blob();
+                })
+                .then(blob => {
+                    // Create clipboard item with the image blob
+                    const clipboardItem = new ClipboardItem({
+                        [blob.type]: blob
+                    });
+                    
+                    // Write to clipboard
+                    return navigator.clipboard.write([clipboardItem]);
+                })
+                .then(() => {
+                    alert('圖片已複製到剪貼板！可以直接貼到 Gemini 中使用');
+                })
+                .catch(err => {
+                    console.error('Failed to copy image via fetch: ', err);
+                    // Fallback: try canvas method
+                    copyImageViaCanvas(imageSrc);
+                });
+        }
+
+        // Fallback method using canvas
+        function copyImageViaCanvas(imageSrc) {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            
+            img.onload = function() {
+                try {
+                    // Create a canvas to convert image to blob
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Set canvas dimensions to match image
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    
+                    // Draw image on canvas
+                    ctx.drawImage(img, 0, 0);
+                    
+                    // Convert canvas to blob
+                    canvas.toBlob(function(blob) {
+                        if (blob) {
+                            // Create clipboard item with the image blob
+                            const clipboardItem = new ClipboardItem({
+                                'image/png': blob
+                            });
+                            
+                            // Write to clipboard
+                            navigator.clipboard.write([clipboardItem]).then(() => {
+                                alert('圖片已複製到剪貼板！可以直接貼到 Gemini 中使用');
+                            }).catch(err => {
+                                console.error('Failed to copy image: ', err);
+                                // Final fallback: copy image URL
+                                navigator.clipboard.writeText(imageSrc).then(() => {
+                                    alert('圖片複製失敗，已複製圖片網址到剪貼板');
+                                });
+                            });
+                        } else {
+                            throw new Error('Failed to create image blob');
+                        }
+                    }, 'image/png');
+                } catch (error) {
+                    console.error('Canvas error: ', error);
+                    // Final fallback: copy image URL
+                    navigator.clipboard.writeText(imageSrc).then(() => {
+                        alert('圖片複製失敗，已複製圖片網址到剪貼板');
+                    });
+                }
+            };
+            
+            img.onerror = function() {
+                console.error('Failed to load image: ', imageSrc);
+                // Final fallback: copy image URL
+                navigator.clipboard.writeText(imageSrc).then(() => {
+                    alert('圖片載入失敗，已複製圖片網址到剪貼板');
+                });
+            };
+            
+            // Start loading the image
+            img.src = imageSrc;
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Search functionality
+            const searchBox = document.getElementById('searchBox');
+            searchBox.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                filteredCases = casesData.filter(caseData => 
+                    caseData.title.toLowerCase().includes(searchTerm) ||
+                    caseData.author.toLowerCase().includes(searchTerm) ||
+                    caseData.prompt.toLowerCase().includes(searchTerm)
+                );
+                renderCases();
+            });
+
+            // Filter buttons
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    // Update active button
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+
+                    // Filter cases
+                    const filter = e.target.dataset.filter;
+                    currentFilter = filter;
+                    
+                    if (filter === 'all') {
+                        filteredCases = [...casesData];
+                    } else {
+                        filteredCases = casesData.filter(caseData => 
+                            caseData.category.includes(filter) ||
+                            caseData.title.includes(filter) ||
+                            caseData.prompt.includes(filter)
+                        );
+                    }
+                    renderCases();
+                });
+            });
+
+            // Modal close
+            const modal = document.getElementById('caseModal');
+            const closeBtn = document.querySelector('.close');
+            
+            closeBtn.onclick = () => {
+                modal.style.display = 'none';
+            };
+
+            window.onclick = (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            };
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+    
+    <script>
+        // Debug function to test if everything is working
+        function testFunction() {
+            console.log('Test function works!');
+            alert('按鈕功能正常！');
+        }
+    </script>
+</body>
+</html>
