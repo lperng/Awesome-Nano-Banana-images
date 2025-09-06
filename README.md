@@ -19,6 +19,21 @@
 
 喜欢就点 ⭐ Star 收藏起来吧！
 
+## 🌐 GitHub Pages
+
+这个项目已经配置了 GitHub Pages 自动部署功能！
+
+- **在线预览**: [https://yourusername.github.io/Awesome-Nano-Banana-images/](https://yourusername.github.io/Awesome-Nano-Banana-images/)
+- **自动部署**: 每次推送到 `main` 或 `master` 分支时，GitHub Actions 会自动构建并部署到 GitHub Pages
+- **繁体中文版**: 访问 [index.html](index.html) 查看繁体中文界面
+
+### 部署说明
+
+1. 确保你的仓库已启用 GitHub Pages
+2. 在仓库设置中，将 Source 设置为 "GitHub Actions"
+3. 推送代码到 `main` 或 `master` 分支
+4. GitHub Actions 会自动处理部署过程
+
 ## 📑 Menu
 
 - [Awesome-Nano-Banana🍌-images](#awesome-nano-banana-images)
